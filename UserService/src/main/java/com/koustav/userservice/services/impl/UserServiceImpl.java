@@ -49,7 +49,7 @@ public List<User> getAllUser() {
     // Iterate over each user and fetch their ratings
     users.forEach(user -> {
         // Fetch ratings from Rating Service
-        String ratingServiceUrl = "http://localhost:8083/ratings/users/" + user.getUserId();
+        String ratingServiceUrl = "http://RATING-SERVICE/ratings/users/" + user.getUserId();
         Rating[] ratingsOfUser = restTemplate.getForObject(ratingServiceUrl, Rating[].class);
 
         logger.info("Ratings for user {}: {}", user.getUserId(), ratingsOfUser);
@@ -57,7 +57,7 @@ public List<User> getAllUser() {
         if (ratingsOfUser != null) {
             List<Rating> ratingList = Arrays.stream(ratingsOfUser).peek(rating -> {
                 // Fetch hotel details from Hotel Service
-                String hotelServiceUrl = "http://localhost:8082/hotels/" + rating.getHotelId();
+                String hotelServiceUrl = "http://HOTEL-SERVICE/hotels/" + rating.getHotelId();
                 ResponseEntity<Hotel> forEntity = restTemplate.getForEntity(hotelServiceUrl, Hotel.class);
                 Hotel hotel = forEntity.getBody();
 
@@ -84,7 +84,7 @@ public List<User> getAllUser() {
                 ()->new ResourceNotFoundException("User with given id is not found on server !! : "+ userId));
         //fetch rating of the above user from Rating Service
         //http://localhost:8083/ratings/users/{userId}
-        Rating[] ratingsOfUser = restTemplate.getForObject("http://localhost:8083/ratings/users/"+user.getUserId(), Rating[].class);
+        Rating[] ratingsOfUser = restTemplate.getForObject("http://RATING-SERVICE/ratings/users/"+user.getUserId(), Rating[].class);
         logger.info("{}", (Object) ratingsOfUser);
 
         List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
@@ -92,7 +92,7 @@ public List<User> getAllUser() {
         List<Rating> ratingList = ratings.stream().peek(rating -> {
             //api call to hotel service to get the hotel
            // http://localhost:8082/hotels/99b67f58-4f72-4283-92ad-40369285360b
-            ResponseEntity<Hotel> forEntity =restTemplate.getForEntity("http://localhost:8082/hotels/"+rating.getHotelId(), Hotel.class);
+            ResponseEntity<Hotel> forEntity =restTemplate.getForEntity("http://HOTEL-SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
             Hotel hotel = forEntity.getBody();
             logger.info("response status code: {}",forEntity.getStatusCode());
             //set  the hotel to rating
