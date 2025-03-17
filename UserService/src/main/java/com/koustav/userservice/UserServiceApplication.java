@@ -2,9 +2,11 @@ package com.koustav.userservice;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 
 
 @SpringBootApplication
+@EnableFeignClients
 /*@EnableEurekaClient
 * Since Spring Boot 2.4, the @EnableEurekaClient annotation is no longer required.
 * If you have the spring-cloud-starter-netflix-eureka-client dependency in your pom.xml,

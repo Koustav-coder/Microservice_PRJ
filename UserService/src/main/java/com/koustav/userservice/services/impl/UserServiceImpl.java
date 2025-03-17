@@ -4,6 +4,7 @@ import com.koustav.userservice.entities.Hotel;
 import com.koustav.userservice.entities.Rating;
 import com.koustav.userservice.entities.User;
 import com.koustav.userservice.exceptions.ResourceNotFoundException;
+import com.koustav.userservice.external.services.HotelService;
 import com.koustav.userservice.repositoriies.UserRepository;
 import com.koustav.userservice.services.UserService;
 import org.slf4j.Logger;
@@ -25,6 +26,8 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private RestTemplate restTemplate;
+    @Autowired
+    private HotelService hotelService;
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     public UserServiceImpl() {
@@ -58,10 +61,10 @@ public List<User> getAllUser() {
             List<Rating> ratingList = Arrays.stream(ratingsOfUser).peek(rating -> {
                 // Fetch hotel details from Hotel Service
                 String hotelServiceUrl = "http://HOTEL-SERVICE/hotels/" + rating.getHotelId();
-                ResponseEntity<Hotel> forEntity = restTemplate.getForEntity(hotelServiceUrl, Hotel.class);
-                Hotel hotel = forEntity.getBody();
-
-                logger.info("Hotel response status code for user {}: {}", user.getUserId(), forEntity.getStatusCode());
+               // ResponseEntity<Hotel> forEntity = restTemplate.getForEntity(hotelServiceUrl, Hotel.class);
+               // Hotel hotel = forEntity.getBody();
+                Hotel hotel = hotelService.getHotel(rating.getHotelId());
+                //logger.info("Hotel response status code for user {}: {}", user.getUserId(), forEntity.getStatusCode());
 
                 // Set the hotel object to rating
                 rating.setHotel(hotel);
@@ -92,9 +95,10 @@ public List<User> getAllUser() {
         List<Rating> ratingList = ratings.stream().peek(rating -> {
             //api call to hotel service to get the hotel
            // http://localhost:8082/hotels/99b67f58-4f72-4283-92ad-40369285360b
-            ResponseEntity<Hotel> forEntity =restTemplate.getForEntity("http://HOTEL-SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
-            Hotel hotel = forEntity.getBody();
-            logger.info("response status code: {}",forEntity.getStatusCode());
+           // ResponseEntity<Hotel> forEntity =restTemplate.getForEntity("http://HOTEL-SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
+           // Hotel hotel = forEntity.getBody();
+            Hotel hotel = hotelService.getHotel(rating.getHotelId());
+            //logger.info("response status code: {}",forEntity.getStatusCode());
             //set  the hotel to rating
             rating.setHotel(hotel);
             //return the rating
